@@ -109,11 +109,12 @@ function DOMMODCreator(){
 	    form.color.value = playerColor;
 	}
 
-	function changeVideo({videoNumber}) {
-		if (videoNumber.value === videoNumber) return;
-		player.loadVideo(videoNumber.value).then(newVideoNumber => {
+	function changeVideo(form) {
+		const newVideoNumber = form.videoNumber.value;
+		form.videoNumber.value = ''; 
+		if (newVideoNumber === videoNumber) return;
+		player.loadVideo(newVideoNumber).then(id => {
 			configPlayer();
-			videoNumber.value = ''; 
 			//remove displaying cues & details
 			const toRemove = QT.seeked();
 			toRemove.forEach(DOMMOD.removeCue);
