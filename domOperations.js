@@ -125,6 +125,9 @@ function DOMMODCreator(){
 			videoNumber = newVideoNumber;
 			//populate details
 			QT.getExistingCues().forEach(addToCueDetails);
+		}).catch(err => {
+			console.error(err);
+			player.loadVideo(videoNumber);
 		})
 	}
 
