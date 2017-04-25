@@ -1,0 +1,35 @@
+<form>
+  <h2>Change Video</h2>
+  Vimeo video number
+  <input type="number" name="videoNumber">
+  <button id="changeVideoButton" type="submit">Submit</button>
+  <br>
+  <small>for example: <em>https://player.vimeo.com/video/<strong>214012765</strong></em></small>
+</form>
+
+
+<div class="vimeo-container">
+    <ul id="cueView"></ul>
+    <iframe src="https://player.vimeo.com/video/214012765" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+</div>
+
+<div id="cueFormContainer">
+    <form id="newCueForm">
+        <h2>Add Cue</h2>
+        <textarea id="cueMessageInput" name="message" placeholder="Enter Cue Message" required></textarea>
+        <br> 
+        Start time:<input id="cueTime" type="number" step="1" name="time" value="0" min="0" max="0"> Duration:<input id="cueDuaration" type="number" step="1" name="duration" value="4" min="1" max="10"> 
+        Text Color:<input id="cueColor" type="color" name="color" value="#ffffff"> 
+        <button id="addCueButton" type="submit">Add Cue</button>
+    </form>
+</div>
+
+<div id="cueDetailsContainer">
+    <h2> Cues </h2>
+    <ul id="cueDetails"></ul>
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script src="cue.js"></script>
+<script src="domOperations.js"></script>
+<link rel="stylesheet" href="styles.css">

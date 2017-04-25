@@ -1,0 +1,3 @@
+A simple interface for creating messages (“cues”) to be overlaid atop a video at a certain time.
+
+To run, simply open index.html. The JS is split into cue.js and domOperations.js. In cue.js, you’ll find constructors for individual Cues, as well as for a Cue Tracker. I treated the Cue Tracker almost like a Redux reducer with an internal store; querying its updateDisplay method with the time will return the cues that should be added and removed from the display, as well as update that state internally. The domOperations.js file has everything that deals with updating the DOM (the cues being displayed on the overlay, the list of all cues, and the new cue form).

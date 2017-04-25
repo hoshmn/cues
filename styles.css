@@ -1,0 +1,63 @@
+p, div, ul {
+	padding: 0;
+	margin: 0;
+}
+
+.vimeo-container {
+ width: 640px;
+ height: 360px;
+ overflow: hidden;
+ max-width: 100%;
+}
+
+#cueView {
+	position: absolute;
+	height: 300px;
+	width: 640px;
+	overflow: scroll;
+}
+
+.cue {
+	margin: 12;
+}
+
+.cue > span {
+	font-size: 20px;
+	background:#000;
+	opacity:0.5;
+	padding: 5 12;
+}
+
+#cueMessageInput {
+	width: 390px;
+	height: 100px;
+}
+
+#cueDetailsContainer {
+	width: 640px;
+}
+
+.cueDetail {
+	background-color: #DEF4FB;
+	border-radius: 5px;
+	margin-bottom: 8px;
+}
+
+.cueMessage {
+	padding: 8px 0 0 8px;
+}
+
+.cueTime {
+	font-family: monospace;
+}
+
+.deleteButton {
+	color: red;
+}
+
+.flexRight {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	padding: 0 8px 8px 0;
+}
