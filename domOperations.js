@@ -3,41 +3,45 @@
 
 const iframe = document.querySelector("iframe");
 const player = new Vimeo.Player(iframe);
-let playerColor;
-
-let videoNumber = '214012765';
-const QTMapper = {};
-
-//set default value of new cue color selector to player color
-player.getColor()
-    .then(function(color) {
-    	if (color[0] != "#") {color = "#"+color;}
-    	document.querySelector("#cueColor").value = color;
-		playerColor = color;
-    })
-    .catch(function(err){
-    	console.error(err);
-    })
-    
-//prevent adding a cue to time later than video duration
-player.getDuration()
-    .then(function(dur) {
-        document.querySelector("#cueTime").max = dur;
-    })
-    .catch(function(err){
-    	console.error(err);
-    })
-
+let playerColor, duration;
+configPlayer();
 
 //constructor from cue.js, tracks cues
 let QT = new CueTracker();
 const DOMMOD = DOMMODCreator();
 
+//will map QTs to their videoNumbers for video switching
+const QTMapper = {};
+let videoNumber = '214012765';
+
+function configPlayer(){
+	//set default value of new cue color selector to player color
+	player.getColor()
+	    .then(function(color) {
+	    	if (color[0] != "#") {color = "#"+color;}
+	    	cueColor.value = color;
+			playerColor = color;
+	    })
+	    .catch(function(err){
+	    	console.error(err);
+	    })
+	    
+	//prevent adding a cue to time later than video duration
+	player.getDuration()
+	    .then(function(dur) {
+	        cueTime.max = dur;
+	        cueDuration.max = dur;
+	        duration = dur;
+	    })
+	    .catch(function(err){
+	    	console.error(err);
+	    })
+}
+
 // ~~~ EVENT LISTENERS ~~~ //
 
 player.on("timeupdate", function(e){
     const {toRemove, toDisplay} = QT.updateDisplay(e.seconds);
-    console.log(e.seconds, toRemove, toDisplay);
     if (toRemove) {toRemove.forEach(DOMMOD.removeCue);}
     if (toDisplay) {toDisplay.forEach(DOMMOD.displayCue);}
 });
@@ -47,22 +51,24 @@ player.on("seeked", function(e) {
 	toRemove.forEach(DOMMOD.removeCue);
 });
 
-document.querySelector('#addCueButton').onclick = function(e){
+const validTime = time => +time >= 0 && +time <= duration;
+
+addCueButton.onclick = function(e){
 	e.preventDefault();
-	DOMMOD.addCue(e.target.parentNode);
+	if (validTime(cueTime.value) && validTime(cueDuration.value)){
+		DOMMOD.addCue(e.target.parentNode);
+	} else alert('Invalid Time');
 };
 
-document.querySelector('#changeVideoButton').onclick = function(e){
+changeVideoButton.onclick = function(e){
 	e.preventDefault();
 	DOMMOD.changeVideo(e.target.parentNode);
 };
 
 // ~~~ CUE INTERACTIONS ~~~ //
-console.log('play.', player);
 function DOMMODCreator(){
 
 	function displayCue(cue) {
-		console.log('cue', cue);
 		const newCue = elementCreator("span", null, null, cue.message);
 		newCue.style.color = cue.color;
 		const li = elementCreator("li", "cue", "Cue#"+cue.id);
@@ -103,23 +109,22 @@ function DOMMODCreator(){
 	    form.color.value = playerColor;
 	}
 
-	function changeVideo(form) {
-		const newVideoNumber = form.videoNumber.value;
-		//reset form
-		form.videoNumber.value = '';
-		if (newVideoNumber === videoNumber) return;
-		//remove displaying cues & details
-		const toRemove = QT.seeked();
-		toRemove.forEach(DOMMOD.removeCue);
-		resetDetails();
-		//store old tracker before pulling or creating one for new video
-		QTMapper[videoNumber] = QT;
-		QT = QTMapper[newVideoNumber] || new CueTracker();
-		videoNumber = newVideoNumber;
-		//populate details
-		QT.getExistingCues().forEach(addToCueDetails);
-		//change video
-		iframe.src = `https://player.vimeo.com/video/${newVideoNumber}`;
+	function changeVideo({videoNumber}) {
+		if (videoNumber.value === videoNumber) return;
+		player.loadVideo(videoNumber.value).then(newVideoNumber => {
+			configPlayer();
+			videoNumber.value = ''; 
+			//remove displaying cues & details
+			const toRemove = QT.seeked();
+			toRemove.forEach(DOMMOD.removeCue);
+			resetDetails();
+			//store old tracker before pulling or creating one for new video
+			QTMapper[videoNumber] = QT;
+			QT = QTMapper[newVideoNumber] || new CueTracker();
+			videoNumber = newVideoNumber;
+			//populate details
+			QT.getExistingCues().forEach(addToCueDetails);
+		})
 	}
 
 	// ~~~ CUE DETAIL (list of cues) INTERACTIONS ~~~ //
