@@ -159,10 +159,6 @@ function DOMMODCreator(){
 		}
 	}
 
-	// function populateDetails(details){
-	// 	details.for
-	// }
-
 	//insert the cue in the correct place in the list, chronologically
 	function insertCue(cueList, cue){
 		const otherCues = cueList.children;
